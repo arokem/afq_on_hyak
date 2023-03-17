@@ -4,7 +4,6 @@ import os.path as op
 import s3fs
 from pathlib import Path
 from tempfile import mkdtemp
-from shutil import mkdirs
 
 import pydra
 
