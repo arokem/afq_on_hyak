@@ -50,7 +50,7 @@ def afq_this(subject):
 
     for ext in exts:
         fname = f"sub-{subject}_space-T1w_desc-preproc_dwi{ext}"
-        rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/dwi/"
+        rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/dwi/{fname}"
         print(f"Putting {rpath} in {l_dwi_path}")
         fs.get(rpath, l_dwi_path)
 
