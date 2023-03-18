@@ -17,20 +17,24 @@ scratch_dir = "/gscratch/escience/arokem/"
 scratch_dir_tmp = op.join(scratch_dir, "tmp")
 cache_dir_tmp = Path(mkdtemp(prefix=scratch_dir_tmp))
 
+
 @pydra.mark.task
 def afq_this(subject):
     # Create local filesystem:
     bids_path = cache_dir_tmp
+    print(f"BIDS path is {bids_path}")
     qsiprep_path = op.join(bids_path, f"derivatives/qsiprep/sub-{subject}")
 
     l_dwi_path = op.join(
             qsiprep_path,
             f"sub-{subject}/dwi/")
+    print(f"Creating {l_dwi_path}")
     os.makedirs(l_dwi_path)
 
     l_anat_path = op.join(
             qsiprep_path,
             f"sub-{subject}/anat/")
+    print(f"Creating {l_anat_path}")
     os.makedirs(l_anat_path)
 
     to_bids_description(bids_path)
@@ -45,11 +49,13 @@ def afq_this(subject):
         fname = f"sub-{subject}_space-T1w_desc-preproc_dwi{ext}"
         rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/dwi/"
         lpath = op.join(l_dwi_path, fname)
+        print(f"Putting {rpath} in {lpath}")
         fs.get(rpath, lpath)
 
     fname = f"sub-{subject}_desc-brain_mask.nii.gz"
     rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/anat/{fname}"
     lpath = op.join(l_anat_path, fname)
+    print(f"Putting {rpath} in {lpath}")
     fs.get(rpath, lpath)
 
     # Ready to AFQ:
@@ -85,5 +91,5 @@ subject_list = ["01", "02"]
 
 t = afq_this(subject=subject_list, cache_dir=cache_dir_tmp).split("subject")
 with pydra.Submitter(plugin="slurm",
-                     sbatch_args="-J jobname -p gpu-a40 -A escience --mem=120G --time=72:00:00 -o /gscratch/escience/arokem/logs/jobname.out -e /gscratch/escience/arokem/logs/jobname.err --mail-user=arokem@uw.edu --mail-type=ALL") as sub:
+                     sbatch_args="-J pyafq -p gpu-a40 -A escience --mem=58G --time=72:00:00 -o /gscratch/escience/arokem/logs/pyafq.out -e /gscratch/escience/arokem/logs/pyafq.err --mail-user=arokem@uw.edu --mail-type=ALL") as sub:
     sub(runnable=t)
