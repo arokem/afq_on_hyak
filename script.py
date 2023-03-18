@@ -73,7 +73,8 @@ def afq_this(subject):
         "n_seeds": 1
     }
 
-    scalars = ["dki_fa", "dki_md", "dki_mk", "dki_awf", "fwdti_fa", "fwdti_md", "fwdti_fwf"]
+    scalars = ["dki_fa", "dki_md", "dki_mk", "dki_awf",
+               "fwdti_fa", "fwdti_md", "fwdti_fwf"]
 
     myafq = GroupAFQ(
         bids_path=bids_path,
