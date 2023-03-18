@@ -51,15 +51,13 @@ def afq_this(subject):
     for ext in exts:
         fname = f"sub-{subject}_space-T1w_desc-preproc_dwi{ext}"
         rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/dwi/"
-        lpath = op.join(l_dwi_path, fname)
-        print(f"Putting {rpath} in {lpath}")
-        fs.get(rpath, lpath)
+        print(f"Putting {rpath} in {l_dwi_path}")
+        fs.get(rpath, l_dwi_path)
 
     fname = f"sub-{subject}_desc-brain_mask.nii.gz"
     rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/anat/{fname}"
-    lpath = op.join(l_anat_path, fname)
-    print(f"Putting {rpath} in {lpath}")
-    fs.get(rpath, lpath)
+    print(f"Putting {rpath} in {l_anat_path}")
+    fs.get(rpath, l_anat_path)
 
     # Ready to AFQ:
     brain_mask_definition = ImageFile(
