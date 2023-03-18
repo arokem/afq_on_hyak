@@ -14,14 +14,14 @@ from AFQ.data.fetch import to_bids_description
 
 
 scratch_dir = "/gscratch/escience/arokem/"
-scratch_dir_tmp = op.join(scratch_dir, "tmp")
-cache_dir_tmp = Path(mkdtemp(prefix=scratch_dir_tmp))
+scratch_dir_tmp = op.join(scratch_dir, "tmp_")
+cache_dir_tmp = mkdtemp(prefix=scratch_dir_tmp)
 
 
 @pydra.mark.task
 def afq_this(subject):
     # Create local filesystem:
-    bids_path = cache_dir_tmp
+    bids_path = mkdtemp(op.join(cache_dir_tmp, "bids_"))
     print(f"BIDS path is {bids_path}")
     qsiprep_path = op.join(bids_path, f"derivatives/qsiprep/sub-{subject}")
 
