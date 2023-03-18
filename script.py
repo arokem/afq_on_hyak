@@ -23,7 +23,7 @@ def afq_this(subject):
     # Create local filesystem:
     bids_path = mkdtemp(prefix=op.join(cache_dir_tmp, "bids_"))
     print(f"BIDS path is {bids_path}")
-    qsiprep_path = op.join(bids_path, f"derivatives/qsiprep/sub-{subject}")
+    qsiprep_path = op.join(bids_path, "derivatives/qsiprep/")
 
     l_dwi_path = op.join(
             qsiprep_path,
@@ -37,8 +37,11 @@ def afq_this(subject):
     print(f"Creating {l_anat_path}")
     os.makedirs(l_anat_path)
 
-    to_bids_description(bids_path)
-    to_bids_description(qsiprep_path, PipelineDescription={"Name": "qsiprep"})
+    to_bids_description(bids_path,
+                        Name=f"sub-{subject}")
+    to_bids_description(qsiprep_path,
+                        Name=f"sub-{subject}",
+                        PipelineDescription={"Name": "qsiprep"})
 
     # Populate inputs from S3:
     bucket = "alstar2.uw.edu"
