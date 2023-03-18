@@ -46,7 +46,7 @@ def afq_this(subject):
     # Populate inputs from S3:
     bucket = "alstar2.uw.edu"
     fs = s3fs.S3FileSystem()
-    exts = ['.bval', '.bvec', 'nii.gz']
+    exts = ['.bval', '.bvec', '.nii.gz']
 
     for ext in exts:
         fname = f"sub-{subject}_space-T1w_desc-preproc_dwi{ext}"
