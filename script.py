@@ -63,7 +63,6 @@ def afq_this(subject):
     brain_mask_definition = ImageFile(
         suffix="mask",
         filters={'desc': 'brain',
-                 'space': 'T1w',
                  'scope': 'qsiprep'})
 
     tracking_params = {
