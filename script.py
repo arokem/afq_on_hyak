@@ -4,6 +4,7 @@ import os.path as op
 import s3fs
 from pathlib import Path
 from tempfile import mkdtemp
+import glob
 
 import pydra
 
@@ -21,7 +22,7 @@ cache_dir_tmp = mkdtemp(prefix=scratch_dir_tmp)
 @pydra.mark.task
 def afq_this(subject):
     # Create local filesystem:
-    bids_path = mkdtemp(prefix=op.join(cache_dir_tmp, "bids_"))
+    bids_path = os.makedirs(op.join(cache_dir_tmp, f"bids_sub-{subject}"))
     print(f"BIDS path is {bids_path}")
     qsiprep_path = op.join(bids_path, "derivatives/qsiprep/")
 
@@ -87,10 +88,18 @@ def afq_this(subject):
     print("Running the pyAFQ pipeline")
     myafq.export_all(afqbrowser=False, xforms=False)
 
+    for ff in glob.glob(op.join(bids_path, f"derivatives/afq/sub-{subject}", "*", "*")):
+        fs.put()
+
+    for lpath in glob.glob("/gscratch/escience/arokem/tmp_m8cuj6h6/bids_7b0fefz7/derivatives/afq/sub-01/*/*"):
+        op.join(f"{bucket}/derivatives/qsiprep/sub-{subject}/",
+                op.split(ff[0])[-1])
+        print(f"Putting {lpath} in {rpath}")
+        fs.put(lpath, rpath)
+
 
 subject_list = ["01", "02"]
-
 t = afq_this(subject=subject_list, cache_dir=cache_dir_tmp).split("subject")
 with pydra.Submitter(plugin="slurm",
-                     sbatch_args="-J pyafq -p gpu-a40 -A escience --mem=58G --time=72:00:00 -o /gscratch/escience/arokem/logs/pyafq.out -e /gscratch/escience/arokem/logs/pyafq.err --mail-user=arokem@uw.edu --mail-type=ALL") as sub:
+                     sbatch_args=f"-J pyafq-sub-{subject} -p gpu-a40 -A escience --mem=58G --time=10:00:00 -o /gscratch/escience/arokem/logs/pyafq-sub-{subject}.out -e /gscratch/escience/arokem/logs/pyafq-sub-{subject}.err --mail-user=arokem@uw.edu --mail-type=ALL") as sub:
     sub(runnable=t)
