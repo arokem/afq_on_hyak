@@ -2,9 +2,9 @@
 import os
 import os.path as op
 import s3fs
-from pathlib import Path
 from tempfile import mkdtemp
 import glob
+from datetime import datetime
 
 import pydra
 
@@ -92,7 +92,7 @@ def afq_this(subject):
         fs.put()
 
     for lpath in glob.glob("/gscratch/escience/arokem/tmp_m8cuj6h6/bids_7b0fefz7/derivatives/afq/sub-01/*/*"):
-        op.join(f"{bucket}/derivatives/qsiprep/sub-{subject}/",
+        op.join(f"{bucket}/derivatives/afq{datetime.today().strftime('%Y-%m-%d')}/sub-{subject}/",
                 op.split(ff[0])[-1])
         print(f"Putting {lpath} in {rpath}")
         fs.put(lpath, rpath)
