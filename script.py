@@ -89,6 +89,13 @@ def afq_this(subject):
     print("Running the pyAFQ pipeline")
     myafq.export_all(afqbrowser=False, xforms=False)
 
+    # Both in the directory and nested directories:
+    for lpath in glob.glob(op.join(bids_path, f"derivatives/afq/sub-{subject}", "*")):
+        rpath = op.join(f"{bucket}/derivatives/afq{datetime.today().strftime('%Y-%m-%d')}/sub-{subject}/",
+                        op.split(lpath)[-1])
+        print(f"Putting {lpath} in {rpath}")
+        fs.put(lpath, rpath)
+
     for lpath in glob.glob(op.join(bids_path, f"derivatives/afq/sub-{subject}", "*", "*")):
         rpath = op.join(f"{bucket}/derivatives/afq{datetime.today().strftime('%Y-%m-%d')}/sub-{subject}/",
                         op.split(lpath)[-1])
