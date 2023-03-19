@@ -22,7 +22,8 @@ cache_dir_tmp = mkdtemp(prefix=scratch_dir_tmp)
 @pydra.mark.task
 def afq_this(subject):
     # Create local filesystem:
-    bids_path = os.makedirs(op.join(cache_dir_tmp, f"bids_sub-{subject}"))
+    bids_path = op.join(cache_dir_tmp, f"bids_sub-{subject}")
+    os.makedirs(bids_path)
     print(f"BIDS path is {bids_path}")
     qsiprep_path = op.join(bids_path, "derivatives/qsiprep/")
 
