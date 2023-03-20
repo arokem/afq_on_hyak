@@ -17,7 +17,7 @@ from AFQ.data.fetch import to_bids_description
 scratch_dir = "/gscratch/escience/arokem/"
 scratch_dir_tmp = op.join(scratch_dir, "tmp_")
 cache_dir_tmp = mkdtemp(prefix=scratch_dir_tmp)
-
+today = datetime.today().strftime('%Y-%m-%d')
 
 @pydra.mark.task
 def afq_this(subject):
@@ -70,9 +70,10 @@ def afq_this(subject):
     tracking_params = {
         'seed_mask': ScalarImage('dki_fa'),
         'stop_mask': ScalarImage('dki_fa'),
+        "seed_threshold": 0.3,
         "odf_model": "CSD",
         "directions": "prob",
-        "n_seeds": 1
+        "n_seeds": 2
     }
 
     scalars = ["dki_fa", "dki_md", "dki_mk", "dki_awf",
@@ -91,13 +92,13 @@ def afq_this(subject):
 
     # Both in the directory and nested directories:
     for lpath in glob.glob(op.join(bids_path, f"derivatives/afq/sub-{subject}", "*")):
-        rpath = op.join(f"{bucket}/derivatives/afq{datetime.today().strftime('%Y-%m-%d')}/sub-{subject}/",
+        rpath = op.join(f"{bucket}/derivatives/afq{today}/sub-{subject}/",
                         op.split(lpath)[-1])
         print(f"Putting {lpath} in {rpath}")
         fs.put(lpath, rpath)
 
     for lpath in glob.glob(op.join(bids_path, f"derivatives/afq/sub-{subject}", "*", "*")):
-        rpath = op.join(f"{bucket}/derivatives/afq{datetime.today().strftime('%Y-%m-%d')}/sub-{subject}/",
+        rpath = op.join(f"{bucket}/derivatives/afq{today}/sub-{subject}/",
                         op.split(lpath)[-1])
         print(f"Putting {lpath} in {rpath}")
         fs.put(lpath, rpath)
