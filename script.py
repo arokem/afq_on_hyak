@@ -22,7 +22,7 @@ today = datetime.today().strftime('%Y-%m-%d')
 @pydra.mark.task
 def afq_this(subject):
     # Create local filesystem:
-    bids_path = op.join(cache_dir_tmp, f"bids_sub-{subject}")
+    bids_path = op.join("/gscratch/escience/arokem/pyafq_data/", f"bids_sub-{subject}")
     os.makedirs(bids_path)
     print(f"BIDS path is {bids_path}")
     qsiprep_path = op.join(bids_path, "derivatives/qsiprep/")
@@ -54,12 +54,14 @@ def afq_this(subject):
         fname = f"sub-{subject}_space-T1w_desc-preproc_dwi{ext}"
         rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/dwi/{fname}"
         print(f"Putting {rpath} in {l_dwi_path}")
-        fs.get(rpath, l_dwi_path)
+        if not op.exists(l_dwi_path):
+            fs.get(rpath, l_dwi_path)
 
     fname = f"sub-{subject}_desc-brain_mask.nii.gz"
     rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/anat/{fname}"
     print(f"Putting {rpath} in {l_anat_path}")
-    fs.get(rpath, l_anat_path)
+    if not op.exists(l_anat_path):
+        fs.get(rpath, l_anat_path)
 
     # Ready to AFQ:
     brain_mask_definition = ImageFile(
