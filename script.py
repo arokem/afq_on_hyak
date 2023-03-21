@@ -96,14 +96,16 @@ def afq_this(subject):
     for lpath in glob.glob(op.join(bids_path, f"derivatives/afq/sub-{subject}", "*")):
         rpath = op.join(f"{bucket}/derivatives/afq{today}/sub-{subject}/",
                         op.split(lpath)[-1])
-        print(f"Putting {lpath} in {rpath}")
-        fs.put(lpath, rpath)
+        if not fs.exists(rpath):
+            print(f"Putting {lpath} in {rpath}")
+            fs.put(lpath, rpath)
 
     for lpath in glob.glob(op.join(bids_path, f"derivatives/afq/sub-{subject}", "*", "*")):
         rpath = op.join(f"{bucket}/derivatives/afq{today}/sub-{subject}/",
                         op.split(lpath)[-1])
-        print(f"Putting {lpath} in {rpath}")
-        fs.put(lpath, rpath)
+        if not fs.exists(rpath):
+            print(f"Putting {lpath} in {rpath}")
+            fs.put(lpath, rpath)
 
 
 subject_list = [f"{ii:02}" for ii in range(1, 70)]
