@@ -53,13 +53,13 @@ def afq_this(subject):
     for ext in exts:
         fname = f"sub-{subject}_space-T1w_desc-preproc_dwi{ext}"
         rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/dwi/{fname}"
-        if not op.exists(l_dwi_path):
+        if not op.exists(op.join(l_dwi_path, fname)):
             print(f"Putting {rpath} in {l_dwi_path}")
             fs.get(rpath, l_dwi_path)
 
     fname = f"sub-{subject}_desc-brain_mask.nii.gz"
     rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/anat/{fname}"
-    if not op.exists(l_anat_path):
+    if not op.exists(op.join(l_anat_path, fname)):
         print(f"Putting {rpath} in {l_anat_path}")
         fs.get(rpath, l_anat_path)
 
@@ -112,5 +112,5 @@ subject_list = [f"{ii:02}" for ii in range(1, 70)]
 t = afq_this(subject=subject_list, cache_dir=cache_dir_tmp).split("subject")
 
 with pydra.Submitter(plugin="slurm",
-                     sbatch_args="-J pyafq -p gpu-a40 -A escience --mem=58G --time=12:00:00 -o /gscratch/escience/arokem/logs/pyafq.out -e /gscratch/escience/arokem/logs/pyafq.err --mail-user=arokem@uw.edu --mail-type=ALL") as sub:
+                     sbatch_args="-J pyafq -p gpu-a40 -A escience --mem=58G --time=18:00:00 -o /gscratch/escience/arokem/logs/pyafq.out -e /gscratch/escience/arokem/logs/pyafq.err --mail-user=arokem@uw.edu --mail-type=ALL") as sub:
     sub(runnable=t)
