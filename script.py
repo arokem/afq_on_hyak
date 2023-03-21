@@ -31,13 +31,13 @@ def afq_this(subject):
             qsiprep_path,
             f"sub-{subject}/dwi/")
     print(f"Creating {l_dwi_path}")
-    os.makedirs(l_dwi_path)
+    os.makedirs(l_dwi_path, exist_ok=True)
 
     l_anat_path = op.join(
             qsiprep_path,
             f"sub-{subject}/anat/")
     print(f"Creating {l_anat_path}")
-    os.makedirs(l_anat_path)
+    os.makedirs(l_anat_path, exist_ok=True)
 
     to_bids_description(bids_path,
                         Name=f"sub-{subject}")
