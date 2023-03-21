@@ -23,7 +23,7 @@ today = datetime.today().strftime('%Y-%m-%d')
 def afq_this(subject):
     # Create local filesystem:
     bids_path = op.join("/gscratch/escience/arokem/pyafq_data/", f"bids_sub-{subject}")
-    os.makedirs(bids_path)
+    os.makedirs(bids_path, exist_ok=True)
     print(f"BIDS path is {bids_path}")
     qsiprep_path = op.join(bids_path, "derivatives/qsiprep/")
 
