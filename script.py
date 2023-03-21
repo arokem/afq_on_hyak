@@ -53,14 +53,14 @@ def afq_this(subject):
     for ext in exts:
         fname = f"sub-{subject}_space-T1w_desc-preproc_dwi{ext}"
         rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/dwi/{fname}"
-        print(f"Putting {rpath} in {l_dwi_path}")
         if not op.exists(l_dwi_path):
+            print(f"Putting {rpath} in {l_dwi_path}")
             fs.get(rpath, l_dwi_path)
 
     fname = f"sub-{subject}_desc-brain_mask.nii.gz"
     rpath = f"{bucket}/derivatives/qsiprep/sub-{subject}/anat/{fname}"
-    print(f"Putting {rpath} in {l_anat_path}")
     if not op.exists(l_anat_path):
+        print(f"Putting {rpath} in {l_anat_path}")
         fs.get(rpath, l_anat_path)
 
     # Ready to AFQ:
