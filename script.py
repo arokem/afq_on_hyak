@@ -28,7 +28,7 @@ def afq_this(subject):
     fs = s3fs.S3FileSystem()
     profiles_csv = f"{bucket}/derivatives/afq{today}/sub-{subject}/sub-{subject}_space-T1w_desc-preproc_dwi_space-RASMM_model-probCSD_algo-AFQ_desc-profiles_dwi.csv"
 
-    if fs.exists(profiles_csv)
+    if fs.exists(profiles_csv):
         print("Output already exists. Terminating!")
         return True
 
