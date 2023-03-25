@@ -18,9 +18,20 @@ scratch_dir = "/gscratch/escience/arokem/"
 scratch_dir_tmp = op.join(scratch_dir, "tmp_")
 cache_dir_tmp = mkdtemp(prefix=scratch_dir_tmp)
 today = datetime.today().strftime('%Y-%m-%d')
+today = "2023-03-21"
+
 
 @pydra.mark.task
 def afq_this(subject):
+    # First check whether the output already exists in AWS:
+    bucket = "alstar2.uw.edu"
+    fs = s3fs.S3FileSystem()
+    profiles_csv = f"{bucket}/derivatives/afq{today}/sub-{subject}/sub-{subject}_space-T1w_desc-preproc_dwi_space-RASMM_model-probCSD_algo-AFQ_desc-profiles_dwi.csv"
+
+    if fs.exists(profiles_csv)
+        print("Output already exists. Terminating!")
+        return True
+
     # Create local filesystem:
     bids_path = op.join("/gscratch/escience/arokem/pyafq_data/", f"bids_sub-{subject}")
     os.makedirs(bids_path, exist_ok=True)
@@ -46,8 +57,6 @@ def afq_this(subject):
                         PipelineDescription={"Name": "qsiprep"})
 
     # Populate inputs from S3:
-    bucket = "alstar2.uw.edu"
-    fs = s3fs.S3FileSystem()
     exts = ['.bval', '.bvec', '.nii.gz']
 
     for ext in exts:
@@ -93,14 +102,16 @@ def afq_this(subject):
     myafq.export_all(afqbrowser=False, xforms=False)
 
     # Both in the directory and nested directories:
-    for lpath in glob.glob(op.join(bids_path, f"derivatives/afq/sub-{subject}", "*")):
+    for lpath in glob.glob(op.join(bids_path,
+                                   f"derivatives/afq/sub-{subject}", "*")):
         rpath = op.join(f"{bucket}/derivatives/afq{today}/sub-{subject}/",
                         op.split(lpath)[-1])
         if not fs.exists(rpath):
             print(f"Putting {lpath} in {rpath}")
             fs.put(lpath, rpath)
 
-    for lpath in glob.glob(op.join(bids_path, f"derivatives/afq/sub-{subject}", "*", "*")):
+    for lpath in glob.glob(op.join(bids_path,
+                                   f"derivatives/afq/sub-{subject}", "*", "*")):
         rpath = op.join(f"{bucket}/derivatives/afq{today}/sub-{subject}/",
                         op.split(lpath)[-1])
         if not fs.exists(rpath):
