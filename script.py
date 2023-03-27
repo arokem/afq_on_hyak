@@ -120,6 +120,8 @@ def afq_this(subject):
 
 
 subject_list = [f"{ii:02}" for ii in range(1, 70)]
+
+subject_list = ["36"]
 t = afq_this(subject=subject_list, cache_dir=cache_dir_tmp).split("subject")
 
 with pydra.Submitter(plugin="slurm",
